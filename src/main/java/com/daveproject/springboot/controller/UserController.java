@@ -1,5 +1,6 @@
 package com.daveproject.springboot.controller;
 
+import com.daveproject.springboot.dto.UserDto;
 import com.daveproject.springboot.entity.User;
 import com.daveproject.springboot.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,8 @@ public class UserController {
 
     // Build create user REST API
     @PostMapping("create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User savedUser =  userService.creatUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+        UserDto savedUser =  userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
