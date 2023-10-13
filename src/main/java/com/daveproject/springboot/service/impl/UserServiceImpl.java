@@ -2,6 +2,7 @@ package com.daveproject.springboot.service.impl;
 
 import com.daveproject.springboot.dto.UserDto;
 import com.daveproject.springboot.entity.User;
+import com.daveproject.springboot.exception.EmailAlreadyExistsException;
 import com.daveproject.springboot.exception.ResourceNotFoundException;
 import com.daveproject.springboot.mapper.AutoUserMapper;
 import com.daveproject.springboot.mapper.UserMapper;
@@ -30,6 +31,12 @@ public class UserServiceImpl implements UserService {
         // Convert userDto to user JPA entity object
 //        User user = UserMapper.mapToUser(userDto);
 //        User user = modelMapper.map(userDto, User.class);
+        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+
+        if (optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Email Already exists for user");
+        }
+
         User user = AutoUserMapper.MAPPER.mapToUser(userDto);
 
         User savedUser = userRepository.save(user);
@@ -74,6 +81,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow( () -> new ResourceNotFoundException("User", "id", user.getId()));
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Email already exist");
+        }
         existingUser.setEmail(user.getEmail());
         User updatedUser = userRepository.save(existingUser);
 //        return UserMapper.mapToUserDto(updatedUser);
