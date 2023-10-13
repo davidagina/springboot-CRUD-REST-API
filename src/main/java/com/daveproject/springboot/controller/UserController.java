@@ -5,6 +5,7 @@ import com.daveproject.springboot.entity.User;
 import com.daveproject.springboot.exception.ErrorDetails;
 import com.daveproject.springboot.exception.ResourceNotFoundException;
 import com.daveproject.springboot.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class UserController {
 
     // Build create user REST API
     @PostMapping("create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user){
         UserDto savedUser =  userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
@@ -45,7 +46,7 @@ public class UserController {
 
     // Update user REST API
     @PutMapping("{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long userId, @RequestBody  UserDto user){
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long userId, @RequestBody @Valid UserDto user){
         user.setId(userId);
         UserDto updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
